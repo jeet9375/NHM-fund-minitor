@@ -1,0 +1,38 @@
+-- Create Database
+CREATE DATABASE IF NOT EXISTS nhm_fund_monitor;
+USE nhm_fund_monitor;
+
+-- 1. Updated User Table (For Gmail Login)
+CREATE TABLE IF NOT EXISTS users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    gmail VARCHAR(120) UNIQUE NOT NULL,
+    password_hash VARCHAR(500) NOT NULL,
+    role VARCHAR(20) DEFAULT 'client' -- 'admin' or 'client'
+);
+
+-- 2. Project Summary Table (For the Bar Chart)
+CREATE TABLE IF NOT EXISTS projects (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    state VARCHAR(100) UNIQUE NOT NULL,
+    allocation DOUBLE DEFAULT 0.0
+);
+
+-- 3. Audit History Table (With Mandatory Description)
+CREATE TABLE IF NOT EXISTS audit_logs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+    user_gmail VARCHAR(100),
+    state VARCHAR(100),
+    type VARCHAR(10), -- 'add' or 'sub'
+    amount DOUBLE,
+    description TEXT NOT NULL -- Mandatory usage description
+);
+
+-- 4. Initial Seed Data
+-- This adds your requested user 'jeet@123gmail.com' with password 'jeet123' (hashed)
+-- Note: The hash below is a placeholder; Flask will generate this automatically.
+INSERT INTO users (gmail, password_hash, role) 
+VALUES ('jeet@123gmail.com', 'pbkdf2:sha256:250000$examplehash...', 'admin');
+
+INSERT INTO users (gmail, password_hash, role) 
+VALUES ('admin@gmail.com', 'pbkdf2:sha256:250000$examplehash...', 'admin');
